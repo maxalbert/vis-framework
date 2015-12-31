@@ -34,7 +34,7 @@ import six
 from music21 import stream, note
 from vis.analyzers import indexer
 
-def indexer_func(obj, idx_attr='nameWithOctave'):
+def indexer_func(obj, note_idx_attr='nameWithOctave'):
     """
     Used internally by :class:`NoteRestIndexer`. Convert :class:`~music21.note.Note` and
     :class:`~music21.note.Rest` objects into a string.
@@ -45,10 +45,10 @@ def indexer_func(obj, idx_attr='nameWithOctave'):
         :class:`music21.note.Rest` as its first element and a list of the running results of this
         indexer_func as the second element.
 
-    :param idx_attr: Name of the attribute of `music21.note.Note` to be used for indexing.
+    :param note_idx_attr: Name of the attribute of `music21.note.Note` to be used for indexing.
         Default is 'nameWithOctave', but you can choose any other attribute such as 'name',
         'measureNumber', etc.
-    :type idx_attr: str
+    :type note_idx_attr: str
 
     :returns: If the first object in the list is a :class:`music21.note.Rest`, the string
         ``u'Rest'``; otherwise the :attr:`~music21.note.Note.nameWithOctave` attribute, which is
@@ -63,7 +63,7 @@ def indexer_func(obj, idx_attr='nameWithOctave'):
     >>> indexer_func((note.Rest(), []))
     u'Rest'
     """
-    return 'Rest' if isinstance(obj[0], note.Rest) else six.u(str(getattr(obj[0], idx_attr)))
+    return 'Rest' if isinstance(obj[0], note.Rest) else six.u(str(getattr(obj[0], note_idx_attr)))
 
 
 class NoteRestIndexer(indexer.Indexer):
@@ -72,22 +72,30 @@ class NoteRestIndexer(indexer.Indexer):
     :class:`~music21.stream.Part`.
 
     :class:`Rest` objects become ``'Rest'``, and :class:`Note` objects become the string-format
-    version of their :attr:`~music21.note.Note.nameWithOctave` attribute.
+    version of the attribute specified by the value of ``note_idx_attr`` in ``settings``.
+
+    The settings for the :class:`NoteRestIndexer` are as follows:
+    :keyword str 'note_idx_attr': Name of the attribute of :class:`music21.note.Note` to be used
+        for indexing (default: 'nameWithOctave').
     """
 
     required_score_type = 'stream.Part'
+    default_settings = {'note_idx_attr': 'nameWithOctave'}
 
-    def __init__(self, score, idx_attr='nameWithOctave'):
+    def __init__(self, score, settings=None):
         """
         :param score: A list of all the Parts to index.
         :type score: list of :class:`music21.stream.Part`
-        :param idx_attr: Name of the attribute of :class:`music21.note.Note` to be used for indexing (default: 'nameWithOctave')
-        :type idx_attr: str
+        :param dict settings: Required and optional settings.
         :raises: :exc:`RuntimeError` if ``score`` is not a list of the right type.
         """
+        self._settings = NoteRestIndexer.default_settings.copy()
+        if settings is not None:
+            self._settings.update(settings)
+
         super(NoteRestIndexer, self).__init__(score, None)
         self._types = ('Note', 'Rest')
-        self._indexer_func = functools.partial(indexer_func, idx_attr=idx_attr)
+        self._indexer_func = functools.partial(indexer_func, note_idx_attr=self._settings['note_idx_attr'])
 
     def run(self):
         """
