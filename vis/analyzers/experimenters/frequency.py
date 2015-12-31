@@ -119,4 +119,8 @@ class FrequencyExperimenter(experimenter.Experimenter):
             each_df.columns = multiindex
             counted.append(each_df)
 
+        # Unpack list containing a single data frame if the input was a single data frame.
+        if isinstance(self._index, pandas.DataFrame):
+            counted = counted[0]
+
         return counted
