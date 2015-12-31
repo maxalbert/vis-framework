@@ -29,11 +29,12 @@
 Index note and rest objects.
 """
 
+import functools
 import six
 from music21 import stream, note
 from vis.analyzers import indexer
 
-def indexer_func(obj):
+def indexer_func(obj, note_attr='nameWithOctave'):
     """
     Used internally by :class:`NoteRestIndexer`. Convert :class:`~music21.note.Note` and
     :class:`~music21.note.Rest` objects into a string.
@@ -43,6 +44,11 @@ def indexer_func(obj):
     :type obj: a 2-tuple containing either a :class:`music21.note.Note` or a
         :class:`music21.note.Rest` as its first element and a list of the running results of this
         indexer_func as the second element.
+
+    :param note_attr: Name of the attribute of `music21.note.Note` to be used for indexing.
+        Default is 'nameWithOctave', but you can choose any other attribute such as 'name',
+        'measureNumber', etc.
+    :type note_attr: str
 
     :returns: If the first object in the list is a :class:`music21.note.Rest`, the string
         ``u'Rest'``; otherwise the :attr:`~music21.note.Note.nameWithOctave` attribute, which is
@@ -57,7 +63,7 @@ def indexer_func(obj):
     >>> indexer_func((note.Rest(), []))
     u'Rest'
     """
-    return 'Rest' if isinstance(obj[0], note.Rest) else six.u(str(obj[0].nameWithOctave))
+    return 'Rest' if isinstance(obj[0], note.Rest) else six.u(str(getattr(obj[0], note_attr)))
 
 
 class NoteRestIndexer(indexer.Indexer):
@@ -71,15 +77,17 @@ class NoteRestIndexer(indexer.Indexer):
 
     required_score_type = 'stream.Part'
 
-    def __init__(self, score):
+    def __init__(self, score, note_attr='nameWithOctave'):
         """
         :param score: A list of all the Parts to index.
         :type score: list of :class:`music21.stream.Part`
+        :param note_attr: Name of the attribute of :class:`music21.note.Note` to be used for indexing (default: 'nameWithOctave')
+        :type note_attr: str
         :raises: :exc:`RuntimeError` if ``score`` is not a list of the right type.
         """
         super(NoteRestIndexer, self).__init__(score, None)
         self._types = ('Note', 'Rest')
-        self._indexer_func = indexer_func
+        self._indexer_func = functools.partial(indexer_func, note_attr=note_attr)
 
     def run(self):
         """
