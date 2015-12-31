@@ -172,6 +172,7 @@ class IndexedPiece(object):
         super(IndexedPiece, self).__init__()
         self._imported = False
         self._noterest_results = None
+        self._noterest_results_settings = None
         self._metadata = {}
         self._opus_id = opus_id  # if the file imports as an Opus, this is the index of the Score
         init_metadata()
@@ -309,7 +310,7 @@ class IndexedPiece(object):
         else:
             self._metadata[field] = value
 
-    def _get_note_rest_index(self, known_opus=False):
+    def _get_note_rest_index(self, known_opus=False, settings=None):
         """
         Return the results of the :class:`NoteRestIndexer` on this piece.
 
@@ -322,14 +323,18 @@ class IndexedPiece(object):
             :meth:`get_data` docs.
         :type known_opus: boolean
 
+        :param settings: Dictionary of settings.
+        :type settings: dict
+
         :returns: Results of the :class:`NoteRestIndexer`.
         :rtype: list of :class:`pandas.Series`
         """
         if known_opus is True:
             return self._import_score(known_opus=known_opus)
-        elif self._noterest_results is None:
+        elif self._noterest_results is None or self._noterest_result_settings != settings:
             data = [x for x in self._import_score().parts]
-            self._noterest_results = noterest.NoteRestIndexer(data).run()
+            self._noterest_results = noterest.NoteRestIndexer(data, settings=settings).run()
+            self._noterest_result_settings = settings
         return self._noterest_results
 
     @staticmethod
@@ -400,7 +405,7 @@ class IndexedPiece(object):
         IndexedPiece._type_verifier(analyzer_cls)
         if data is None:
             if analyzer_cls[0] is noterest.NoteRestIndexer:
-                data = self._get_note_rest_index(known_opus=known_opus)
+                data = self._get_note_rest_index(known_opus=known_opus, settings=settings)
             # NB: Experimenter subclasses don't have "required_score_type"
             elif (hasattr(analyzer_cls[0], 'required_score_type') and
                   analyzer_cls[0].required_score_type == 'stream.Part'):
