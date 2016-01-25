@@ -51,14 +51,14 @@ def main():
     base = raw_input('Log base: ')
     base = math.e if base == 'e' else float(base)
     entropy = -sum(prob * math.log(prob, base) for ngram, prob in ngrams_w_prefix)
-    print '\nThe entropy of the prefix {} is {}.\n'.format(ng_prefix, entropy)
+    print('\nThe entropy of the prefix {} is {}.\n'.format(ng_prefix, entropy))
     yesses = ['y', 'yes']
     calc_prob = raw_input(
         'Show the probability that each Ngram will happen after the given prefix? (y/n): '
     )
     if calc_prob.lower() in yesses:
         for ngram, prob in ngrams_w_prefix:
-            print '{}: {:.2f}%'.format(ngram, prob * 100)
+            print('{}: {:.2f}%'.format(ngram, prob * 100))
 
 
 if __name__ == '__main__':

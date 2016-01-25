@@ -50,7 +50,7 @@ def main():
     # # actual = ind_piece.get_data([noterest.NoteRestIndexer]) #dur_indexer.run()['metre.DurationIndexer']
     # # actual = ind_piece.get_data([metre.NoteBeatStrengthIndexer]) #dur_indexer.run()['metre.DurationIndexer']
     # t1 = time.time()
-    # print 'Noterest Indexer Runtime: ' + str(t1-t0)
+    # print('Noterest Indexer Runtime: ' + str(t1-t0))
     # pdb.set_trace()
 
 
@@ -143,7 +143,7 @@ def main():
 
 
     # basic2 = time.time()
-    # print 'Basic-Indexer Runtime: ' + str(basic2 - basic1)
+    # print('Basic-Indexer Runtime: ' + str(basic2 - basic1))
 
 
     # horiz = interval.HorizontalIntervalIndexer(basic_nr, horiz_setts).run()
@@ -153,8 +153,8 @@ def main():
 
 
     t1 = time.time()
-    print 'Time taken to run all indexers: '
-    print t1 - t0
+    print('Time taken to run all indexers: ')
+    print(t1 - t0)
 
     pdb.set_trace()
 
@@ -173,8 +173,8 @@ def main():
     # workm.output('LilyPond', '/Users/amor/Documents/Code/VIS/test_output/combined_dissonances')
 
     # t3 = time.time()
-    # print 'Time to produce score output: '
-    # print t3 - t2
+    # print('Time to produce score output: ')
+    # print(t3 - t2)
 
 if __name__ == "__main__":
     main()
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     # nr1 = time.clock()
     # note_rest = ind_piece.get_data([noterest.NoteRestIndexer], setts)
     # nr2 = time.clock()
-    # print 'Time to run NoteRestIndexer: ' + str(nr2-nr1)
+    # print('Time to run NoteRestIndexer: ' + str(nr2-nr1))
 
 
     # newnr1 = time.clock()
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     # iterables = [['noterest.NoteRestIndexer'], part_strings]
     # new_nr_multi_index = pandas.MultiIndex.from_product(iterables, names = ['Indexer', 'Parts'])
     # new_nr.columns = new_nr_multi_index
-    # print 'New NoteRest Indexer Runtime: ' + str(newnr2 - newnr1)
+    # print('New NoteRest Indexer Runtime: ' + str(newnr2 - newnr1))
 
 
 
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     # iterables = [['metre.DurationIndexer'], part_strings]
     # new_dur_multi_index = pandas.MultiIndex.from_product(iterables, names = ['Indexer', 'Parts'])
     # new_dur.columns = new_dur_multi_index
-    # print 'New Duration Indexer Runtime: ' + str(newdur2 - newdur1)
+    # print('New Duration Indexer Runtime: ' + str(newdur2 - newdur1))
 
     # # double1 = time.clock()
     # # parts_nr = []
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     #     parts_dur.append(pandas.Series(dur, index=part_index))
 
     # double2 = time.clock()
-    # print 'Double-Indexer Runtime: ' + str(double2 - double1)
+    # print('Double-Indexer Runtime: ' + str(double2 - double1))
 
     # double_nr = pandas.concat([s for s in parts_nr], axis=1)
     # double_dur = pandas.concat([s for s in parts_dur], axis=1)
@@ -338,7 +338,7 @@ if __name__ == "__main__":
     # iterables = [['metre.NoteBeatStrengthIndexer'], part_strings]
     # new_bs.columns = pandas.MultiIndex.from_product(iterables, names = ['Indexer', 'Parts'])
     # newbs2 = time.clock()
-    # print 'New BeatStrength Indexer Runtime: ' + str(newbs2 - newbs1)
+    # print('New BeatStrength Indexer Runtime: ' + str(newbs2 - newbs1))
 
 
 
@@ -357,7 +357,7 @@ if __name__ == "__main__":
     #     group_strengths[y] = group_data
     # iterables = [['metre.GroupBeatStrengthIndexer'], group_strengths.columns]
     # group_strengths.columns = pandas.MultiIndex.from_product(iterables, names = ['Indexer', 'Parts'])
-    # # print group_strengths
+    # # print(group_strengths)
 
 
 
@@ -374,14 +374,14 @@ if __name__ == "__main__":
     #             duras.append(durations.loc[z][int(v)])     # Turning v into an int is extremely hacky.
     #         group_data.append(nanmax(duras))
     #     group_durations[y] = group_data
-    # print group_durations
+    # print(group_durations)
 
 
 
     # mi4 = time.clock()
     # vis_m_ind = metre.MeasureIndexer(test_piece.parts[0]).run()
     # mi5 = time.clock()
-    # print "Time taken to run old measure indexer: " + str(mi5-mi4)
+    # print("Time taken to run old measure indexer: " + str(mi5-mi4))
     # pdb.set_trace()
 
 
@@ -390,7 +390,7 @@ if __name__ == "__main__":
     # fa1 = time.clock()
     # fermatas = ind_piece.get_data([fermata.FermataIndexer])
     # fa2 = time.clock()
-    # print "Fermata runtime: " + str(fa2-fa1)
+    # print("Fermata runtime: " + str(fa2-fa1))
 
 
     # fa3 = time.clock() # This version of the fermata indexer runs about 5 times as fast.
@@ -424,5 +424,5 @@ if __name__ == "__main__":
     # basic_fm.columns = basic_fm_multi_index
 
     # fa4 = time.clock()
-    # print "New Fermata indexer runtime: " + str(fa4 - fa3)
+    # print("New Fermata indexer runtime: " + str(fa4 - fa3))
 
