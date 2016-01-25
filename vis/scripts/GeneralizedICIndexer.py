@@ -94,8 +94,8 @@ def icAny(level, ngram):
     # if all the vert intervals are within the same compound octave, keep reducing them until they get to the simple octave
     octs = range(6, 63, 7) # a range of octave spans between the double octave and the nine-fold octave
     if any([all(v > o and v < (o + level + 1) for v in verts) for o in octs]):
-            for v in verts:
-                verts[verts.index(v)] = v - 7
+        for v in verts:
+            verts[verts.index(v)] = v - 7
         for i, x in enumerate(verts):
             ngram[i*2] = x - 7
         return icAny(level, ngram)
