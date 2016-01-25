@@ -161,6 +161,6 @@ dfs = pd.concat((med_nr, nr, dur, beat_sth, measures, horiz, vert, ngrams, dur_n
 # freqs.to_csv('/home/amor/Code/vis-framework/vis/scripts/Karens_Pieces/frequency_data.csv')
 
 t2 = time.time()
-print 'VIS Analysis took %f seconds.' % round((t2-t1), 2)
+print('VIS Analysis took %f seconds.' % round((t2-t1), 2))
 counts = med_nr.stack().stack().value_counts()
 pdb.set_trace()
