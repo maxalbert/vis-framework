@@ -7,7 +7,7 @@
 # Filename:               controllers/indexers/ngram.py
 # Purpose:                k-part anything n-gram Indexer
 #
-# Copyright (C) 2013, 2014 Christopher Antila, Alexander Morgan
+# Copyright (C) 2013-2016 Christopher Antila, Alexander Morgan
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,10 @@
 #--------------------------------------------------------------------------------------------------
 """
 .. codeauthor:: Christopher Antila <christopher@antila.ca>
-
+.. codeauthor:: Alexander Morgan
+.. deprecated:: 2.4.0
+	This indexer is deprecated and will be replaced in version 3.0 with  what is currently 
+	called the new_ngram_indexer.
 Indexer to find k-part any-object n-grams.
 """
 
@@ -37,47 +40,41 @@ from vis.analyzers import indexer
 
 class NGramIndexer(indexer.Indexer):
     """
+    Warning: This indexer is deprecated and will be replaced in version 3.0 with  what is currently 
+    called the new_ngram_indexer.
+    
+    Indexer to find k-part any-object n-grams.
     Indexer that finds k-part n-grams from other indices.
-
     The indexer requires at least one "vertical" index, and supports "horizontal" indices that seem
     to "connect" instances in the vertical indices. Although we use "vertical" and "horizontal" to
     describe these index types, because the class is an abstraction of two-part interval n-grams,
     you can supply any information as either type of index. If you want one-part melodic n-grams
     for example, you should supply the relevant interval information as the "vertical" component.
-
     There is no relationship between the number of index types, though there must be at least one
     "vertical" index.
-
     The ``'horizontal'`` and ``'vertical'`` settings determine which columns of the ``score``
     :class:`DataFrame` are included in the n-gram output. They are added to the n-gram in the order
     specified, so if the ``'vertical'`` setting is
     ``[('noterest.NoteRestIndexer', '1'), ('noterest.NoteRestIndexer', '0')]``, this will put the
     lower part (with index ``'1'``) before the higher part (with index ``'0'``). Note that both the
     indexer's name and the part-combination name must be included.
-
     This is an example minimum ``settings`` dictionary for making interval 3-grams:::
-
         {'vertical': [('interval.IntervalIndexer', '0,1')],
          'horizontal': [('interval.HorizontalIntervalIndexer', '1')],
          'n': 3}
-
     IMPORTANT: the data associated with the ``'horizontal'`` settings should have been generated
     with ``'horiz_attach_later'`` set to ``True``. If not, the resulting n-grams will have their
     "horizontal" intervals incorrectly offset.
-
     In the output, groups of "vertical" events are normally enclosed in brackets, while groups of
     "horizontal" events are enclosed in parentheses. For cases where there is only one index in a
     particular direction, you can avoid printing the brackets or parentheses by setting the
     ``'mark singles'`` setting to ``False`` (the default is ``True``).
-
     If you want n-grams to terminate when finding one or several particular values, you can specify
     this with the ``'terminator'`` setting.
-
     To show that a horizontal event continues, we use ``'_'`` by default, but you can set this
     separately, for example to ``'P1'`` ``'0'``, as seems appropriate. Note that the default
     :class:`WorkflowManager` overrides this setting by dynamically adjusting for interval quality,
     and also offers a ``'continuer'`` setting of its own, which is passed to this indexer.
-
     You can also use the :class:`NGramIndexer` to collect "stacks" of single vertical events. If
     you provide indices of intervals above a lowest part, for example, these "stacks" become the
     figured bass signature of a single moment. Set ``'n'`` to ``1`` for this feature. Horizontal
@@ -89,7 +86,6 @@ class NGramIndexer(indexer.Indexer):
     possible_settings = ['horizontal', 'vertical', 'n', 'mark_singles', 'terminator', 'continuer', 'mp']
     """
     A list of possible settings for the :class:`NGramIndexer`.
-
     :keyword 'horizontal': Selectors for the parts to consider as "horizontal."
     :type 'horizontal': list of (str, str) tuples
     :keyword 'vertical': Selectors for the parts to consider as "vertical."
@@ -123,7 +119,6 @@ class NGramIndexer(indexer.Indexer):
         :type score: :class:`pandas.DataFrame`
         :param dict settings: Required and optional settings. See descriptions in
             :const:`possible_settings`.
-
         :raises: :exc:`RuntimeError` if ``score`` is the wrong type.
         :raises: :exc:`RuntimeError` if ``score`` is not a list of the same types.
         :raises: :exc:`RuntimeError` if required settings are not present in ``settings``.
@@ -147,24 +142,18 @@ class NGramIndexer(indexer.Indexer):
         """
         Format str objects by concatenating them with a space between and the appropriate
         grouping symbol, if relevant. This method is used by _format_vert() and _format_horiz().
-
         :param things: All the events for this moment.
         :type things: iterable of str
-
         :param m_singles: Whether to put marker characters around single-item iterables.
         :type m_singles: boolean
-
         :param markers: The "marker" strings to put around the output, if desired. Defualt is [].
         :type markers: 2-tuple of str
-
         :param terminator: If one of the events is in this iterale, raise a RuntimeError. Default
             is [None].
         :type terminator: list of str or None
-
         :returns: A str with a space between every event and marker characters if there is more
             than one event or m_singles is True.
         :rtype: str
-
         :raises: RuntimeWarning, if the one of the events is a "terminator."
         """
         terminator = [] if terminator is None else terminator
@@ -192,21 +181,16 @@ class NGramIndexer(indexer.Indexer):
         """
         Format "vertical" str objects by concatenating them with a space between and the
         appropriate grouping symbol, if relevant.
-
         :param verts: All the "vertical" events for this moment.
         :type verts: iterable of str
-
         :param m_singles: Whether to put marker characters around single-item iterables.
         :type m_singles: boolean
-
         :param terminator: If one of the events is in this iterale, raise a RuntimeError. Default
             is [None].
         :type terminator: list of str or None
-
         :returns: A str with a space between every event and marker characters if there is more
             than one event or m_singles is True.
         :rtype: str
-
         :raises: RuntimeWarning, if the one of the events is a "terminator."
         """
         return NGramIndexer._format_thing(verts, m_singles, ('[', ']'), terminator)
@@ -216,21 +200,16 @@ class NGramIndexer(indexer.Indexer):
         """
         Format "horizontal" str objects by concatenating them with a space between and the
         appropriate grouping symbol, if relevant.
-
         :param verts: All the "horizontal" events for this moment.
         :type verts: iterable of str
-
         :param m_singles: Whether to put marker characters around single-item iterables.
         :type m_singles: boolean
-
         :param terminator: If one of the events is in this iterale, raise a RuntimeError. Default
             is [None].
         :type terminator: list of str or None
-
         :returns: A str with a space between every event and marker characters if there is more
             than one event or m_singles is True.
         :rtype: str
-
         :raises: RuntimeWarning, if the one of the events is a "terminator."
         """
         return NGramIndexer._format_thing(horizs, m_singles, ('(', ')'), terminator)
@@ -240,7 +219,6 @@ class NGramIndexer(indexer.Indexer):
         Make the part-combination column label for the returned DataFrame's MultiIndex. This
         involves a rather complex coordination between the "vertical," "horizontal," and
         "mark_singles" settings.
-
         Refer to the automated tests for examples of what happens.
         """
         verts = ['{}'.format(x[1]) for x in self._settings['vertical']]
@@ -262,7 +240,6 @@ class NGramIndexer(indexer.Indexer):
     def run(self):
         """
         Make an index of k-part n-grams of anything.
-
         :returns: A single-column :class:`~pandas.DataFrame` with the new index.
         """
         # NOTE: in an incredible stroke of luck, the VIS 1 run() algorithm works without change

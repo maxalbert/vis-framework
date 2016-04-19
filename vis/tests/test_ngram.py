@@ -560,7 +560,6 @@ class TestNGramIndexer(unittest.TestCase):
     def test_ngram_20(self):
         """
         Ensure that events in other voices don't erroneously cause events in the voices-under-study.
-
         Regression test for GH#334.
         """
         # NB: it looks like this:

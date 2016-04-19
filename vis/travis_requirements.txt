@@ -4,9 +4,9 @@ music21
 pandas
 
 # For plotting.
-scipy>=0.16.0,<1.0.0
+scipy==0.16.0
 
 # For testing, coverage, stuff like that.
-mock>=1.0.1
+mock==1.0.1
 coverage
 python-coveralls
